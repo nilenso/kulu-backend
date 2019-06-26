@@ -52,11 +52,11 @@ Once started, visit [http://localhost:3001/](http://localhost:3001/)
 
 You may have noticed that our HTTP requests come in with
 `under_scored` params but everywhere inside the app we use the
-`kabab-case`. This is done with
+`kebab-case`. This is done with
 `kulu-backend.utils.api/idiomatize-keys` and it's friends:
 
 + On incoming HTTP requests (at the handler level) we convert params
-  to the `kabab-case` (`dasherize` them).
+  to the `kebab-case` (`dasherize` them).
 + Once the response is ready, we convert the response body back to the
   `under_score` flavor.
 
