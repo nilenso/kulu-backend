@@ -101,9 +101,9 @@ dev AWS IAM account can't read/write from the prod resources and vice-versa.
 
 + Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins`
 
-+ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
-
 + Run `elasticsearch`
+
++ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
 
 ###### Elsewhere
 
@@ -113,9 +113,9 @@ dev AWS IAM account can't read/write from the prod resources and vice-versa.
 
 + `chmod +x bin/elasticsearch`
 
-+ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
-
 + `bin/elasticsearch`
+
++ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
 
 + this starts a process that binds to port 9200.
 
