@@ -3,3 +3,4 @@ target/
 .lein-failures
 
 config/kulu-backend-secrets.edn
+pom.xml
