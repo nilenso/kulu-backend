@@ -99,7 +99,7 @@ dev AWS IAM account can't read/write from the prod resources and vice-versa.
 ###### OS X
 + `brew install elasticsearch@2.4`
 
-+ Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins`
++ Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins` (Note: This is no longer active)
 
 + Run `elasticsearch`
 
