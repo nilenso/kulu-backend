@@ -8,7 +8,7 @@ The main backend service for the Kulu app.
 
 * Create the secret config from the sample:
 ```
-cp config/kulu-backend-secrets-sample.edn config/kulu-backend-secrets.edn
+cp config/templates/kulu-backend-secrets.edn config/kulu-backend-secrets.edn
 ```
 * Fill in the placeholder vals in the above file. Read on to learn
   more about our configuration management.
