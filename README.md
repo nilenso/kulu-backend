@@ -28,7 +28,7 @@ create extension "uuid-ossp";
 * `lein deps` to get all the dependencies
 * Migration script expects DATABASE_URL in the enviroment
 ```
-DATABASE_URL=postgres://$USER\:@localhost:5432/kulu_backend_dev lein clj-sql-up migrate
+DATABASE_URL=postgres://$USER:@localhost:5432/kulu_backend_dev lein clj-sql-up migrate
 ```
 
 ### Running
