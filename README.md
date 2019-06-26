@@ -94,9 +94,10 @@ queues for dev/prod and IAM account's permissions make sure that the
 dev AWS IAM account can't read/write from the prod resources and vice-versa.
 
 #### ElasticSearch
++ Kulu has not been tested with versions later than 2.4, use at your own peril.
 
 ###### OS X
-+ `brew install elasticsearch`
++ `brew install elasticsearch@2.4`
 
 + Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins`
 
@@ -106,7 +107,7 @@ dev AWS IAM account can't read/write from the prod resources and vice-versa.
 
 ###### Elsewhere
 
-+ Go to http://www.elasticsearch.com/download/ and download the latest version of elasticsearch (assumingly as zip).
++ Go to http://www.elasticsearch.com/download/ and download the 2.4 version (assumingly as zip).
 
 + unzip it.
 
