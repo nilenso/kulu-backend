@@ -1,6 +1,8 @@
 logs/
 target/
-.lein-failures
 
+.lein-failures
+.lein-repl-history
+.nrepl-history
 config/kulu-backend-secrets.edn
 pom.xml
