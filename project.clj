@@ -36,6 +36,7 @@
                  [clojurewerkz/elastisch "2.1.0-beta5"]
                  [com.cemerick/friend "0.2.0"]
                  [org.clojure/core.incubator "0.1.3"]
+                 [org.clojure/tools.nrepl "0.2.10"]
                  [dk.ative/docjure "1.10.0"]
 
                  [nilenso/mailgun "0.2.2"]]
