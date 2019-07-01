@@ -96,6 +96,9 @@ dev AWS IAM account can't read/write from the prod resources and vice-versa.
 #### ElasticSearch
 + Kulu has not been tested with versions later than 2.4, use at your own peril.
 
+#### Java
++ Kulu has not been tested with versions later than 1.8.x, use at your own peril.
+
 ###### OS X
 + `brew install elasticsearch@2.4`
 
