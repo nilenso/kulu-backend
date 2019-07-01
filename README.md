@@ -138,11 +138,37 @@ to get something like:
 
 + Or install the KOPF UI in your plugins directory from: https://github.com/lmenezes/elasticsearch-kopf
 
+### Lein
+
+Running the backend with any recent version of `lein` will require the following to be put in `$HOME/.lein/profiles.clj`
+
+```
+{:user
+ {:dependencies [[org.clojure/clojure "1.8.0"]
+                 [potemkin "0.4.5"]]}}
+```
+
+Recent versions of `lein` use an `nrepl` which requires `clojure 1.8`. The `potemkin` version
+transitively loaded by `clj-http` doesn't work with `clojure 1.8` so it needs to be updated
+to a compatible version (anything that plays well with `clojure 1.8` and above).
+
 ### Tests
 
 Run `lein test` to run tests. It will automatically set the `NOMAD_ENV=test` and pick up the right configuration.
 
 Make sure you run `elasticsearch` before running tests, as some of the tests in the suite test end-to-end making real calls to ES on a test index.
+
+### Emacs
+
+Recent versions of `cider` should inject a compatible `cider-nrepl`. If that doesn't work,
+please add a compatible `cider-nrepl` version to the lein plugins vector e.g.
+
+```
+{:user
+ {:plugins [[cider/cider-nrepl "0.22.0-beta6"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [potemkin "0.4.5"]]}}
+```
 
 ### Companion Services
 
