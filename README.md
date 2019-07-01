@@ -10,8 +10,8 @@ The main backend service for the Kulu app.
 ```
 cp config/templates/kulu-backend-secrets.edn config/kulu-backend-secrets.edn
 ```
-* Fill in the placeholder vals in the above file. Read on to learn
-  more about our configuration management.
+* Fill in the placeholder vals in the above file. Values are available from
+[https://dashboard.heroku.com/apps/kulu-backend/setting]https://dashboard.heroku.com/apps/kulu-backend/settings, you'll need to have yourself added as a collaborator.
 
 * Ensure that you're running postgres 9.5 or 9.6 (postgres >=10 is not supported)
 * Set up dev and test dbs:
