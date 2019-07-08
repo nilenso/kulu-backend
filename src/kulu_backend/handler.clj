@@ -28,7 +28,8 @@
             [schema.core :as s]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
-            [cheshire.core :as cj :only [decode]])
+            [cheshire.core :as cj :only [decode]]
+            [kulu-backend.organizations-users.api :as orgs-users-api])
   (:import java.net.URI))
 
 ;; /api/v1/users/login
@@ -213,7 +214,7 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                           (GET* "/users" [req]
                                 :return [s/Any]
                                 :query-params [organization_name]
-                                (ok (orgs-users/users organization_name)))))))
+                                (ok (orgs-users-api/users organization_name)))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []

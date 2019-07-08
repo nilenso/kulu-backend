@@ -26,7 +26,7 @@
 
 (defn users
   [org-name]
-  (-> (h-sql/select :user_email :role)
+  (-> (h-sql/select :user_email :role :is_active)
       (h-sql/from table-name)
       (h-sql/where [:= :organization_name org-name])
       sql/format
