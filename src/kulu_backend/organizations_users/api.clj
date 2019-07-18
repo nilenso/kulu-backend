@@ -9,3 +9,7 @@
                              "de-activated"))
             (dissoc :is-active))
        (org-users/users org-name)))
+
+(defn delete-user
+  [id]
+  (org-users/delete id))

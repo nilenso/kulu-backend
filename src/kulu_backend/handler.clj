@@ -214,7 +214,13 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                           (GET* "/users" [req]
                                 :return [s/Any]
                                 :query-params [organization_name]
-                                (ok (orgs-users-api/users organization_name)))))))
+                                (ok (orgs-users-api/users organization_name)))
+                          (DELETE* "/users/:id" []
+                                 :return s/Any
+                                 :path-params [id :- s/Uuid]
+                                 (if (orgs-users-api/delete-user id)
+                                   (ok {:id id})
+                                   (not-found {:errors "Not Found"})))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []
