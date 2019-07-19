@@ -8,10 +8,10 @@ The main backend service for the Kulu app.
 
 * Create the secret config from the sample:
 ```
-cp config/kulu-backend-secrets-sample.edn config/kulu-backend-secrets.edn
+cp config/templates/kulu-backend-secrets.edn config/kulu-backend-secrets.edn
 ```
-* Fill in the placeholder vals in the above file. Read on to learn
-  more about our configuration management.
+* Fill in the placeholder vals in the above file. Values are available from
+[https://dashboard.heroku.com/apps/kulu-backend/setting]https://dashboard.heroku.com/apps/kulu-backend/settings, you'll need to have yourself added as a collaborator.
 
 * Ensure that you're running postgres 9.5 or 9.6 (postgres >=10 is not supported)
 * Set up dev and test dbs:
@@ -28,7 +28,7 @@ create extension "uuid-ossp";
 * `lein deps` to get all the dependencies
 * Migration script expects DATABASE_URL in the enviroment
 ```
-DATABASE_URL=postgres://$USER\:@localhost:5432/kulu_backend_dev lein clj-sql-up migrate
+DATABASE_URL=postgres://$USER:@localhost:5432/kulu_backend_dev lein clj-sql-up migrate
 ```
 
 ### Running
@@ -52,11 +52,11 @@ Once started, visit [http://localhost:3001/](http://localhost:3001/)
 
 You may have noticed that our HTTP requests come in with
 `under_scored` params but everywhere inside the app we use the
-`kabab-case`. This is done with
+`kebab-case`. This is done with
 `kulu-backend.utils.api/idiomatize-keys` and it's friends:
 
 + On incoming HTTP requests (at the handler level) we convert params
-  to the `kabab-case` (`dasherize` them).
+  to the `kebab-case` (`dasherize` them).
 + Once the response is ready, we convert the response body back to the
   `under_score` flavor.
 
@@ -94,27 +94,31 @@ queues for dev/prod and IAM account's permissions make sure that the
 dev AWS IAM account can't read/write from the prod resources and vice-versa.
 
 #### ElasticSearch
++ Kulu has not been tested with versions later than 2.4, use at your own peril.
+
+#### Java
++ Kulu has not been tested with versions later than 1.8.x, use at your own peril.
 
 ###### OS X
-+ `brew install elasticsearch`
++ `brew install elasticsearch@2.4`
 
-+ Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins`
-
-+ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
++ Install the KOPF UI plugin to handle all ES administration: https://github.com/lmenezes/elasticsearch-kopf in `/usr/local/var/lib/elasticsearch/plugins` (Note: This is no longer active)
 
 + Run `elasticsearch`
 
++ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
+
 ###### Elsewhere
 
-+ Go to http://www.elasticsearch.com/download/ and download the latest version of elasticsearch (assumingly as zip).
++ Go to http://www.elasticsearch.com/download/ and download the 2.4 version (assumingly as zip).
 
 + unzip it.
 
 + `chmod +x bin/elasticsearch`
 
-+ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
-
 + `bin/elasticsearch`
+
++ `$ lein run -m kulu-backend.tasks setup dev` to migrate indices.
 
 + this starts a process that binds to port 9200.
 
@@ -137,11 +141,37 @@ to get something like:
 
 + Or install the KOPF UI in your plugins directory from: https://github.com/lmenezes/elasticsearch-kopf
 
+### Lein
+
+Running the backend with any recent version of `lein` will require the following to be put in `$HOME/.lein/profiles.clj`
+
+```
+{:user
+ {:dependencies [[org.clojure/clojure "1.8.0"]
+                 [potemkin "0.4.5"]]}}
+```
+
+Recent versions of `lein` use an `nrepl` which requires `clojure 1.8`. The `potemkin` version
+transitively loaded by `clj-http` doesn't work with `clojure 1.8` so it needs to be updated
+to a compatible version (anything that plays well with `clojure 1.8` and above).
+
 ### Tests
 
 Run `lein test` to run tests. It will automatically set the `NOMAD_ENV=test` and pick up the right configuration.
 
 Make sure you run `elasticsearch` before running tests, as some of the tests in the suite test end-to-end making real calls to ES on a test index.
+
+### Emacs
+
+Recent versions of `cider` should inject a compatible `cider-nrepl`. If that doesn't work,
+please add a compatible `cider-nrepl` version to the lein plugins vector e.g.
+
+```
+{:user
+ {:plugins [[cider/cider-nrepl "0.22.0-beta6"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [potemkin "0.4.5"]]}}
+```
 
 ### Companion Services
 

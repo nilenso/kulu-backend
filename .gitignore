@@ -1,0 +1,10 @@
+logs/
+target/
+
+.lein-failures
+.lein-repl-history
+.nrepl-history
+.nrepl-port
+config/kulu-backend-secrets.edn
+pom.xml
+*~
