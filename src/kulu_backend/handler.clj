@@ -43,6 +43,13 @@
       (handler req)
       (unauthorized {}))))
 
+(defn wrap-admin-authorization
+  [handler]
+  (fn [req]
+    (if (auth/admin-permissions? req)
+      (handler req)
+      (unauthorized {}))))
+
 ;; TODO: this header parsing code is repeated in mailer.clj, move it to a single place.
 (defn wrap-email-authorization [handler]
   (fn [{:keys [params headers] :as req}]
@@ -200,27 +207,29 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
 
   (defroutes* admin-routes
     (context "/admin" []
-             (middlewares [wrap-authorization]
-                          (POST* "/invite" [req]
-                                 :body-params [organization_name :- s/Str
-                                               user_email :- s/Str]
-                                 (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
-                                   (users-api/send-invite user_email
-                                                          organization_name
-                                                          (tokens/create-token :invite_token
-                                                                               [user_email organization_name]))
-                                   (bad-request {:error "User is already present in your company"})))
+                (POST* "/invite" [req]
+                       :body-params [organization_name :- s/Str
+                                     user_email :- s/Str]
+                       :middlewares [wrap-authorization]
+                       (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
+                         (users-api/send-invite user_email
+                                                organization_name
+                                                (tokens/create-token :invite_token
+                                                                     [user_email organization_name]))
+                         (bad-request {:error "User is already present in your company"})))
 
-                          (GET* "/users" [req]
-                                :return [s/Any]
-                                :query-params [organization_name]
-                                (ok (orgs-users-api/active-users organization_name)))
-                          (DELETE* "/users/:id" []
-                                 :return s/Any
-                                 :path-params [id :- s/Uuid]
-                                 (if (orgs-users-api/delete-user id)
-                                   (ok {:id id})
-                                   (not-found {:errors "Not Found"})))))))
+                (GET* "/users" [req]
+                      :return [s/Any]
+                      :query-params [organization_name]
+                      :middlewares [wrap-authorization]
+                      (ok (orgs-users-api/active-users organization_name)))
+                (DELETE* "/users/:id" []
+                       :return s/Any
+                       :path-params [id :- s/Uuid]
+                       :middlewares [wrap-authorization wrap-admin-authorization]
+                       (if (orgs-users-api/delete-user id)
+                         (ok {:id id})
+                         (not-found {:errors "Not Found"}))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []

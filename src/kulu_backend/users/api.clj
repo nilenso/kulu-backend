@@ -71,6 +71,10 @@
   (and (not-any? clojure.string/blank? (vals (dissoc creds :token)))
        (= (:password creds) (:confirm creds))))
 
+(defn admin?
+  [email]
+  (= "admin" (:role (user/lookup-by-email email))))
+
 (defn send-user-mail-with-link
   [organization_name user_email token subject path]
   (let [protocol "https://"
