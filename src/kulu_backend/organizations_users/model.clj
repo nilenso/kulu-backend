@@ -24,13 +24,15 @@
               ["id = ?" id])
   id)
 
-(defn users
+(defn active-users
   [org-name]
   (-> (h-sql/select :id :user_email :role :is_active)
       (h-sql/from table-name)
-      (h-sql/where [:= :organization_name org-name])
+      (h-sql/where [:and [:= :organization_name org-name]
+                    [:= :is_active true]])
       sql/format
       db/query))
+
 
 (defn lookup-by-email-and-org
   [user-email org-name]

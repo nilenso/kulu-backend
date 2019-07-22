@@ -1,7 +1,7 @@
 (defproject kulu-backend "0.1.0-SNAPSHOT"
   :description "Kulu backend service"
   :min-lein-version "2.0.0"
-  :dependencies [[org.clojure/clojure "1.6.0"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
 
                  [metosin/compojure-api "0.15.0"]
                  [metosin/ring-swagger-ui "2.0.17"]
@@ -36,7 +36,7 @@
                  [clojurewerkz/elastisch "2.1.0-beta5"]
                  [com.cemerick/friend "0.2.0"]
                  [org.clojure/core.incubator "0.1.3"]
-                 [org.clojure/tools.nrepl "0.2.10"]
+                 [nrepl "0.5.3"]
                  [dk.ative/docjure "1.10.0"]
 
                  [nilenso/mailgun "0.2.2"]]

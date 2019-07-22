@@ -8,3 +8,5 @@ target/
 config/kulu-backend-secrets.edn
 pom.xml
 *~
+.idea/
+*.iml

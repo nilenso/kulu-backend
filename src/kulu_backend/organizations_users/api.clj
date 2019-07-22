@@ -1,14 +1,14 @@
 (ns kulu-backend.organizations-users.api
   (:require [kulu-backend.organizations-users.model :as org-users]))
 
-(defn users
+(defn active-users
   [org-name]
   (map #(-> %
             (assoc :status (if (:is-active %)
                              "active"
                              "de-activated"))
             (dissoc :is-active))
-       (org-users/users org-name)))
+       (org-users/active-users org-name)))
 
 (defn delete-user
   [id]
