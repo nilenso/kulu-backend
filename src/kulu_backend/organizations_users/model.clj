@@ -57,6 +57,15 @@
       db/query
       first))
 
+(defn admin?
+  [email org-name]
+  (= "admin" (:role (lookup-by-email-and-org email org-name))))
+
+(defn active?
+  [email org-name]
+  (:is-active (lookup-by-email-and-org email org-name)))
+
+
 ;; Soft-delete the user
 (defn delete
   [id]

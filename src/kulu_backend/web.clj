@@ -1,5 +1,5 @@
 (ns kulu-backend.web
-  (:require [nrepl.server :as nrepl-server]
+  (:require [clojure.tools.nrepl.server :as nrepl-server]
             [kulu-backend.handler :refer [app]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]

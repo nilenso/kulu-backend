@@ -1,6 +1,6 @@
 (ns kulu-backend.auth
   (:require [kulu-backend.session-tokens.model :as token]
-            [kulu-backend.organizations-users.api :refer [admin? active?]]
+            [kulu-backend.organizations-users.model :refer [admin? active?]]
             [schema.core :as s]
             (cemerick.friend [workflows :as workflows]
                              [credentials :as creds])))

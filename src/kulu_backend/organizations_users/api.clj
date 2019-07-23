@@ -10,15 +10,6 @@
             (dissoc :is-active))
        (org-users/active-users org-name)))
 
-(defn admin?
-  [email org-name]
-  (= "admin" (:role (org-users/lookup-by-email-and-org email org-name))))
-
-(defn active?
-  [email org-name]
-  (:is-active (org-users/lookup-by-email-and-org email org-name)))
-
-
 (defn delete-user
   [id]
   (org-users/delete id))

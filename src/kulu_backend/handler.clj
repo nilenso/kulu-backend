@@ -207,10 +207,10 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
 
   (defroutes* admin-routes
     (context "/admin" []
+      (middlewares [wrap-authorization wrap-admin-authorization]
                 (POST* "/invite" [req]
                        :body-params [organization_name :- s/Str
                                      user_email :- s/Str]
-                       :middlewares [wrap-authorization]
                        (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
                          (users-api/send-invite user_email
                                                 organization_name
@@ -221,15 +221,13 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                 (GET* "/users" [req]
                       :return [s/Any]
                       :query-params [organization_name]
-                      :middlewares [wrap-authorization]
                       (ok (orgs-users-api/active-users organization_name)))
                 (DELETE* "/users/:id" []
                        :return s/Any
                        :path-params [id :- s/Uuid]
-                       :middlewares [wrap-authorization wrap-admin-authorization]
                        (if (orgs-users-api/delete-user id)
                          (ok {:id id})
-                         (not-found {:errors "Not Found"}))))))
+                         (not-found {:errors "Not Found"})))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []
