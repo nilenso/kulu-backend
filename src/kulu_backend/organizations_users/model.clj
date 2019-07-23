@@ -26,7 +26,7 @@
 
 (defn active-users
   [org-name]
-  (-> (h-sql/select :id :user_email :role :is_active)
+  (-> (h-sql/select :id :user_email :role)
       (h-sql/from table-name)
       (h-sql/where [:and [:= :organization_name org-name]
                     [:= :is_active true]])
