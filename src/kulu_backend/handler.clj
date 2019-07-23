@@ -28,6 +28,7 @@
             [schema.core :as s]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
+            [kulu-backend.users.model :refer [lookup-by-id lookup-by-email]]
             [cheshire.core :as cj :only [decode]]
             [kulu-backend.organizations-users.api :as orgs-users-api])
   (:import java.net.URI))
@@ -207,10 +208,10 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
 
   (defroutes* admin-routes
     (context "/admin" []
-      (middlewares [wrap-authorization wrap-admin-authorization]
                 (POST* "/invite" [req]
                        :body-params [organization_name :- s/Str
                                      user_email :- s/Str]
+                       :middlewares [wrap-authorization wrap-admin-authorization]
                        (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
                          (users-api/send-invite user_email
                                                 organization_name
@@ -221,13 +222,18 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                 (GET* "/users" [req]
                       :return [s/Any]
                       :query-params [organization_name]
+                      :middlewares [wrap-authorization wrap-admin-authorization]
                       (ok (orgs-users-api/active-users organization_name)))
-                (DELETE* "/users/:id" []
+                (DELETE* "/users/:id" [headers :as req]
                        :return s/Any
                        :path-params [id :- s/Uuid]
-                       (if (orgs-users-api/delete-user id)
-                         (ok {:id id})
-                         (not-found {:errors "Not Found"})))))))
+                       :middlewares [wrap-authorization wrap-admin-authorization]
+                       (let [user-email (:email (token/get-it (headers "x-auth-token")))]
+                         (if (not= (:user-name (lookup-by-email user-email)) (:user-name (lookup-by-id id)))
+                           (do (if (orgs-users-api/delete-user id)
+                                 (ok {:id id})
+                                 (not-found {:errors "Not Found"})))
+                           (bad-request {:error "Cannot delete self"})))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []
