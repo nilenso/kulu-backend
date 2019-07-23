@@ -3,12 +3,7 @@
 
 (defn active-users
   [org-name]
-  (map #(-> %
-            (assoc :status (if (:is-active %)
-                             "active"
-                             "de-activated"))
-            (dissoc :is-active))
-       (org-users/active-users org-name)))
+  (org-users/active-users org-name))
 
 (defn delete-user
   [id]
