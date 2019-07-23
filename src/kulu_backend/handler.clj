@@ -229,10 +229,10 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                        :path-params [id :- s/Uuid]
                        :middlewares [wrap-authorization wrap-admin-authorization]
                        (let [email (:user-email (token/get-it (headers "x-auth-token")))]
-                         (if (not= (:user-name (lookup-by-email emailg)) (:user-name (lookup-by-id id)))
-                           (do (if (orgs-users-api/delete-user id)
+                         (if (not= (:user-name (lookup-by-email email)) (:user-name (lookup-by-id id)))
+                           (if (orgs-users-api/delete-user id)
                                  (ok {:id id})
-                                 (not-found {:errors "Not Found"})))
+                                 (not-found {:errors "Not Found"}))
                            (bad-request {:error "Cannot delete self"})))))))
 
 (defroutes* dashboard-routes
