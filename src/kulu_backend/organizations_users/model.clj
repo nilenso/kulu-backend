@@ -28,7 +28,8 @@
   [org-name]
   (-> (h-sql/select :id :user_email :role)
       (h-sql/from table-name)
-      (h-sql/where [:and [:= :organization_name org-name]
+      (h-sql/where [:and
+                    [:= :organization_name org-name]
                     [:= :is_active true]])
       sql/format
       db/query))
@@ -38,7 +39,9 @@
   [user-email org-name]
   (-> (h-sql/select :*)
       (h-sql/from table-name)
-      (h-sql/where [:and [:= :user_email user-email] [:= :organization_name org-name]])
+      (h-sql/where [:and
+                    [:= :user_email user-email]
+                    [:= :organization_name org-name]])
       sql/format
       db/query
       first))

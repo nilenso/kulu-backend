@@ -225,11 +225,13 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
                       :query-params [organization_name]
                       :middlewares [wrap-authorization wrap-admin-authorization]
                       (ok (orgs-users-api/active-users organization_name)))
+
                 (DELETE* "/users/:id" request
                        :return s/Any
                        :path-params [id :- s/Uuid]
                        :middlewares [wrap-authorization wrap-admin-authorization]
-                       (let [email (:user-email (token/get-it ((:headers request) "x-auth-token")))]
+                       (let [email (:user-email (token/get-it (get (:headers request)
+                                                                   "x-auth-token")))]
                          (if (not= email (:user-email (lookup id)))
                            (if (orgs-users-api/delete-user id)
                                  (ok {:id id})
