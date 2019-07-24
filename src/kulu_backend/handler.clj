@@ -28,7 +28,10 @@
             [schema.core :as s]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
-            [cheshire.core :as cj :only [decode]])
+            [kulu-backend.users.model :refer [lookup-by-email]]
+            [kulu-backend.organizations-users.model :refer [lookup]]
+            [cheshire.core :as cj :only [decode]]
+            [kulu-backend.organizations-users.api :as orgs-users-api])
   (:import java.net.URI))
 
 ;; /api/v1/users/login
@@ -39,6 +42,13 @@
 (defn wrap-authorization [handler]
   (fn [req]
     (if (auth/permission? req)
+      (handler req)
+      (unauthorized {}))))
+
+(defn wrap-admin-authorization
+  [handler]
+  (fn [req]
+    (if (auth/admin-permissions? req)
       (handler req)
       (unauthorized {}))))
 
@@ -199,21 +209,34 @@ Returns with a 204 (No content) on success, 404 when no item with uuid found"
 
   (defroutes* admin-routes
     (context "/admin" []
-             (middlewares [wrap-authorization]
-                          (POST* "/invite" [req]
-                                 :body-params [organization_name :- s/Str
-                                               user_email :- s/Str]
-                                 (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
-                                   (users-api/send-invite user_email
-                                                          organization_name
-                                                          (tokens/create-token :invite_token
-                                                                               [user_email organization_name]))
-                                   (bad-request {:error "User is already present in your company"})))
+                (POST* "/invite" [req]
+                       :body-params [organization_name :- s/Str
+                                     user_email :- s/Str]
+                       :middlewares [wrap-authorization wrap-admin-authorization]
+                       (if (empty? (orgs-users/lookup-by-email-and-org user_email organization_name))
+                         (users-api/send-invite user_email
+                                                organization_name
+                                                (tokens/create-token :invite_token
+                                                                     [user_email organization_name]))
+                         (bad-request {:error "User is already present in your company"})))
 
-                          (GET* "/users" [req]
-                                :return [s/Any]
-                                :query-params [organization_name]
-                                (ok (orgs-users/users organization_name)))))))
+                (GET* "/users" [req]
+                      :return [s/Any]
+                      :query-params [organization_name]
+                      :middlewares [wrap-authorization wrap-admin-authorization]
+                      (ok (orgs-users-api/active-users organization_name)))
+
+                (DELETE* "/users/:id" request
+                       :return s/Any
+                       :path-params [id :- s/Uuid]
+                       :middlewares [wrap-authorization wrap-admin-authorization]
+                       (let [email (:user-email (token/get-it (get (:headers request)
+                                                                   "x-auth-token")))]
+                         (if (not= email (:user-email (lookup id)))
+                           (if (orgs-users-api/delete-user id)
+                                 (ok {:id id})
+                                 (not-found {:errors "Not Found"}))
+                           (bad-request {:error "Cannot delete self"})))))))
 
 (defroutes* dashboard-routes
   (context "/reports/dashboard" []

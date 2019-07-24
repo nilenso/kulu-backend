@@ -1,5 +1,6 @@
 (ns kulu-backend.auth
   (:require [kulu-backend.session-tokens.model :as token]
+            [kulu-backend.organizations-users.model :refer [admin? active?]]
             [schema.core :as s]
             (cemerick.friend [workflows :as workflows]
                              [credentials :as creds])))
@@ -20,6 +21,13 @@
   [{:keys [params headers] :as req}]
   (let [token (token/get-it (headers "x-auth-token"))]
     (and (contains? params :organization_name)
+         (active? (:user-email token) (:organization_name params))
          (s/validate s/Str (:organization_name params))
          (not (empty? token))
          (= (:organization-name token) (clojure.string/lower-case (:organization_name params))))))
+
+(defn admin-permissions?
+  [{:keys [headers params]}]
+  (let [token (token/get-it (headers "x-auth-token"))]
+    (admin? (:user-email token) (:organization_name params))))
+
