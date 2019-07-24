@@ -1,0 +1,16 @@
+language: clojure
+lein: 2.9.1
+os: osx
+before_install: - echo "{:user {:dependencies [[org.clojure/clojure "1.8.0"] [potemkin "0.4.5"]]}}" > $HOME/.lein/profiles.clj
+                - brew install elasticsearch@2.4
+                - elasticsearch
+install: - lein deps
+before_script: - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE kulu_backend_test;' -U postgres; fi"
+               - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE extension uuid-ossp;' -U postgres; fi"
+               - DATABASE_URL=postgres://$USER:@localhost:5432/kulu_backend_test lein clj-sql-up migrate
+script: lein test
+branches:
+  only:
+    - travis-ci
+addons:
+  postgresql: "9.6"
