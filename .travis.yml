@@ -1,0 +1,41 @@
+language: clojure
+dist: trusty
+lein: lein
+jdk:
+  - openjdk8
+cache:
+  directories:
+    - "$HOME/.m2"
+before_install:
+  - curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.4.0/elasticsearch-2.4.0.deb
+    && sudo dpkg -i --force-confnew elasticsearch-2.4.0.deb && sudo service elasticsearch
+    restart
+  - mkdir -p $HOME/.lein
+  - touch $HOME/.lein/profiles.clj
+  - echo '{:user {:dependencies [[org.clojure/clojure "1.8.0"] [potemkin "0.4.5"]]}}'
+    > $HOME/.lein/profiles.clj
+before_script:
+  - psql -c 'CREATE DATABASE kulu_backend_test;' -U postgres
+  - psql -d kulu_backend_test -c 'CREATE extension "uuid-ossp";' -U postgres
+  # Sleep for 10 seconds to allow elasticsearch to boot up before tests.
+  - sleep 10
+env:
+  global: PGPORT = 6666 DATABASE_URL = postgres://$USER:@localhost:$PGPORT/kulu_backend_test
+script: lein test
+branches:
+  only:
+    - master
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+services:
+  - elasticsearch
+addons:
+  postgresql: '9.6'
+deploy:
+  provider: heroku
+  api_key:
+    secure: Ql/fiDFjNbFHxaBIN9GeeHKTRg58LRvMd6eBy2uHl7izWN0LQm+bXJVIIhw2QqfQo77nj5t58JjuSkwCTt9+aST7vAUiDQlqHLJtabZVK42078M4gupP3RCXJ8Aw5fA14Y7AQBD8DhDlxbZuZVeCZjzQ8D3KJPBnLeoMhiXOSKLxvTo51nCEZW2rCN0UCsekZxxWyeBwZAxcwy8r+u2RRru7L2T/BH5BQjPOfJ+WlGZ6kGerHrDpmHNcBms5prFlWScoRFhGaZOl0uSDi6i/0t5BEMLSiqVN6KxSrPGd9eECuqlS9OmRcit2Q9mAnCfKnquYlmL1iqsUUM2xCx6MskGasNLhOcmswdp24MIOs3Ys1+DpZrN88dJO90j9R0DQX6MFQ3pWwjsKaNuxeuYbxpMXhSxOW4Io3K2UFOfI0h2MkC02m83UGsDCaTCHribS7eqseHHvb4qRj5L3AUfjpytxbyr19PgIW/j735OiqZYs3VjHQzctYQKzsOVen3WUVLrcxmMm0+K0JeHpWuq5LROQ0/R2Ah7+oahfX8Ljx2ST4Gl3ve5aZ1e9jqIs/RydliWx2RvIv3j0J/lrzD9gnlq8/nogL1/QuUhwZsAL7znM9OkQn17ZrtNZKZoxgNXOgusjEUcwpsRswIRTws0KQGAWz5AsawTfaFywpgyX8KI=
+  on:
+    branch: master

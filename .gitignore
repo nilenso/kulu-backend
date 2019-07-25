@@ -1,6 +1,6 @@
 logs/
 target/
-
+.ruby-version
 .lein-failures
 .lein-repl-history
 .nrepl-history
