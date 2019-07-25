@@ -35,6 +35,8 @@ addons:
   postgresql: '9.6'
 deploy:
   provider: heroku
+  run:
+    - $DATABASE_URL lein clj-sql-up migrate
   api_key:
     secure: Ql/fiDFjNbFHxaBIN9GeeHKTRg58LRvMd6eBy2uHl7izWN0LQm+bXJVIIhw2QqfQo77nj5t58JjuSkwCTt9+aST7vAUiDQlqHLJtabZVK42078M4gupP3RCXJ8Aw5fA14Y7AQBD8DhDlxbZuZVeCZjzQ8D3KJPBnLeoMhiXOSKLxvTo51nCEZW2rCN0UCsekZxxWyeBwZAxcwy8r+u2RRru7L2T/BH5BQjPOfJ+WlGZ6kGerHrDpmHNcBms5prFlWScoRFhGaZOl0uSDi6i/0t5BEMLSiqVN6KxSrPGd9eECuqlS9OmRcit2Q9mAnCfKnquYlmL1iqsUUM2xCx6MskGasNLhOcmswdp24MIOs3Ys1+DpZrN88dJO90j9R0DQX6MFQ3pWwjsKaNuxeuYbxpMXhSxOW4Io3K2UFOfI0h2MkC02m83UGsDCaTCHribS7eqseHHvb4qRj5L3AUfjpytxbyr19PgIW/j735OiqZYs3VjHQzctYQKzsOVen3WUVLrcxmMm0+K0JeHpWuq5LROQ0/R2Ah7+oahfX8Ljx2ST4Gl3ve5aZ1e9jqIs/RydliWx2RvIv3j0J/lrzD9gnlq8/nogL1/QuUhwZsAL7znM9OkQn17ZrtNZKZoxgNXOgusjEUcwpsRswIRTws0KQGAWz5AsawTfaFywpgyX8KI=
   on:
