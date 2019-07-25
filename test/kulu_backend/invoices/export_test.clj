@@ -14,6 +14,6 @@
           data {:headers headers :rows rows}
           search-query [["Search Parameter" "Value"]
                         ["Merchant Name" "Chinita"]]
-          params {:name "Chouiia", :per-page 15, :page 1}]
+          params {:name "Chinita", :per-page 15, :page 1}]
       (is (= search-query (export/construct-search-query params)))
       (is (.exists (io/file (export/create-sheet data params)))))))
