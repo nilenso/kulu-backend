@@ -17,27 +17,30 @@ before_install:
 before_script:
   - psql -c 'CREATE DATABASE kulu_backend_test;' -U postgres
   - psql -d kulu_backend_test -c 'CREATE extension "uuid-ossp";' -U postgres
-  # Sleep for 10 seconds to allow elasticsearch to boot up before tests.
   - sleep 10
 env:
-  global: PGPORT = 6666 DATABASE_URL = postgres://$USER:@localhost:$PGPORT/kulu_backend_test
+  global:
+    - PGPORT = 6666 DATABASE_URL = postgres://$USER:@localhost:$PGPORT/kulu_backend_test
+    - secure: ptDjxKXVfoGWiaOh+3xCFo/rSV/JCXRRUvr6hZkRaYosUvr9BGdvBn6CLUPkKonMfe0Om7EKZCfWDnrtC77r8JXNCbt/dAx3Au8u690acFjw+Rr7GX6klR/nkDGzjrQOgFYf1ueKqEgxbJN/wd8FhfgimGKEjzU7r8FxlY+KIDWdsTE6Ptfzfle9wZkjA1RQQiafZgConyyTxJiF2eqS77q7z3RVbPXJl2A7CLYRu6W9rjBsGHDoXD2XFH5YVrvnHFcqikElqfjzMJZ/nF+yDiWWRgVlRiDRHaromoGGLI73VsglQEAWvFhlezOp8WWA4uwXO4805NYL7p0s7XH7+KsHB6Keqo3AuotBUm6O8xHVP/u6qIqRbResaLwaLeMcMpns4+fg4GetbZYOqc3HQXdXq3e57KbTnyoHlLhALlkibhK1e9RkJ3kkdov9fM3sKJZTULHlELqPOky5NKMH7c5+GmPMzTaJm2ga6MxkgkiiTaa0BdFwM1iebGAX65TOYY7/0mLOyPtTTvhOCBqOxElhMWrEqwRI9TKpwLwDae2khdhYKiol8TZL7n9RDpvAuCU073K23/5dspN1ha1O6bZQtx7Ud42daJG2pPEsFIi+448taNSsZ+UdrInln6BuhrL6eVcZaiiJcgSzLz/4vSIStdaLx+iravYzoT0Rx0U=
 script: lein test
 branches:
   only:
-    - master
+    - ansible
 notifications:
   email:
     on_success: never
-    on_failure: always
+    on_failure: never
 services:
   - elasticsearch
 addons:
   postgresql: '9.6'
+  hosts: 165.22.213.15
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_2ffb742f6491_key -iv $encrypted_2ffb742f6491_iv
+    -in kulu.pem.enc -out kulu.pem -d
+  - chmod 600 kulu.pem
 deploy:
-  provider: heroku
-  run:
-    - "$DATABASE_URL lein clj-sql-up migrate"
-  api_key:
-    secure: uCm3CifmfpmK2N5ceQ0/smdFPspAIi0rKzbFa/1QbBHdepQ3k8nTvl0zcP7n2T0D4VcK6ivmaK4gkOfoUZ6JeX15s75RKfuG9ldvJUw8kxBueDqyDgQmu4PgD1jlgBTqN2SZv1CupKtNEVhc/c2PoOh+2IvMO/UUe1XVeF6tlwAtvoxwEqy9UWKyLuRmun5s9PFgYIm5INQAASr6pIzwBVyg4JZpcm82YSUBB11mmOPBIT1OLKINlBB0720j8x7ovfdhCxRFnhcu3dmag2mIASO7t6Dz3R6fiY8u5g39aKtz1mcQOXxEOkU2GH53WDqU9+Ia1W/BOzU76j+eVQD40DXOVoF4EAt2Ln9rBubKs8hcHqpQOTKT4+BrfbgIOizmWUBPzX06P4Tp5twWav0bMipRSrFR9VReZWdZYsKXsjLl/ErIHH2uvSlrsS6QTuQ3lY35D47mmX6VnUt8+Lm7WqnMrbmPW0S8S8GizrWxmBon1H1Ca6yQ+lF+fMYDsgYg43L75IdplCfCrLjJQsiLneBXJDg1yAtf9y+dNX1h201oaYmLHRMHp2FQzld1SEd8QDTbntqQkqFz9ALVPlSXcSj2K3Khwx/6n8yK+yAog0VdFARFqCKDS5OmBDk7Tze725qqMp4ojKdKaujvcK4HT6KVg6rJDsYPPvpFixvG+1M=
+  provider: script
+  script: ansible-playbook kulu.yml -u $ANSIBLE_USER -e "ansible_sudo_pass=$ANSIBLE_SUDO_PASS"
   on:
-    branch: master
+    branch: ansible
