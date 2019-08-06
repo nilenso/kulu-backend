@@ -34,7 +34,7 @@ services:
   - elasticsearch
 addons:
   postgresql: '9.6'
-  hosts: 165.22.213.15
+  ssh_known_hosts: 165.22.213.15
 before_deploy:
   - sudo pip install ansible
   - openssl aes-256-cbc -K $encrypted_3c3c8465fa13_key -iv $encrypted_3c3c8465fa13_iv
@@ -42,6 +42,6 @@ before_deploy:
   - chmod 600 kulu.pem
 deploy:
   provider: script
-  script: ansible-playbook ansible/kulu.yml -u $ANSIBLE_USER -e "ansible_sudo_pass=$ANSIBLE_SUDO_PASS"
+  script: ansible-playbook ansible/kulu.yml -i ansible/inventory/hosts -u $ANSIBLE_USER -e "ansible_sudo_pass=$ANSIBLE_SUDO_PASS"
   on:
     branch: ansible
