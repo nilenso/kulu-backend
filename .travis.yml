@@ -43,9 +43,15 @@ before_deploy:
   - openssl aes-256-cbc -K $encrypted_3c3c8465fa13_key -iv $encrypted_3c3c8465fa13_iv
     -in deploy_key.enc -out $HOME/deploy_key -d
   - chmod 600 $HOME/deploy_key
+  - eval `ssh-agent -s`
+  - ssh-add $HOME/deploy_key
+  - lein clean
+  - lein uberjar
+  - echo $KULU_JAR_PATH
+  - scp $HOME/build/nilenso/kulu-backend/target/kulu-backend-0.1.0-SNAPSHOT-standalone.jar $DEPLOY_USER@$DEPLOY_TARGET:~/
 deploy:
   provider: script
-  script: ansible-playbook ansible/kulu.yml -i ansible/inventory/hosts -u $ANSIBLE_USER
+  script: ansible-playbook ansible/kulu.yml -i ansible/inventory/hosts -u $DEPLOY_USER
     -e "ansible_sudo_pass=$ANSIBLE_SUDO_PASS" --private-key $HOME/deploy_key
   on:
     branch: ansible
