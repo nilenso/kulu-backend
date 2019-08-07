@@ -1,8 +1,8 @@
 [Unit]
-Description = kulu-backend
+Description=kulu-backend
 
 [Service]
-ExecStart = java -cp ~/kulu-backend-0.1.0-SNAPSHOT-standalone.jar clojure.main  -m kulu-backend.web
+ExecStart=java -cp ~/kulu-backend-0.1.0-SNAPSHOT-standalone.jar clojure.main  -m kulu-backend.web
 Restart=always
 RestartSec=5
 

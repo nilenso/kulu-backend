@@ -1,3 +1,4 @@
 - import_playbook: roles/java/tasks/main.yml
 - import_playbook: roles/postgres/tasks/main.yml
 - import_playbook: roles/elasticsearch/tasks/main.yml
+- import_playbook: roles/kulu-service/tasks/main.yml
