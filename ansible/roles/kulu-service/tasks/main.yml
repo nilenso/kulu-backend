@@ -3,6 +3,10 @@
   gather_facts: no
 
   tasks:
+    - name: Create service file
+      become: true
+      shell: mv kulu.service /etc/systemd/system
+
     - name: Start kulu service
       systemd:
         state: started

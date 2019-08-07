@@ -49,7 +49,6 @@ before_deploy:
   - lein uberjar
   - echo $KULU_JAR_PATH
   - scp $HOME/build/nilenso/kulu-backend/target/kulu-backend-0.1.0-SNAPSHOT-standalone.jar $DEPLOY_USER@$DEPLOY_TARGET:~/
-  - scp $HOME/build/nilenso/kulu-backend/config/kulu.service $DEPLOY_USER@$DEPLOY_TARGET:/etc/systemd/system/
 deploy:
   provider: script
   script: ansible-playbook ansible/kulu.yml -i ansible/inventory/hosts -u $DEPLOY_USER
