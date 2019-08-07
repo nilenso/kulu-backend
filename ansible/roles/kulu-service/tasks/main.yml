@@ -1,0 +1,9 @@
+- hosts: kuluserver
+  become: true
+  gather_facts: no
+
+  tasks:
+    - name: Start kulu service
+      systemd:
+        state: started
+        name: kulu
