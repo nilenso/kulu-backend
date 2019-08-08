@@ -5,7 +5,9 @@
   tasks:
     - name: Create service file
       become: true
-      shell: mv kulu.service /etc/systemd/system
+      copy:
+        src: "kulu.service"
+        dest: /etc/systemd/system
 
     - name: Start kulu service
       systemd:
