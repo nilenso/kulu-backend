@@ -47,7 +47,6 @@ before_deploy:
   - ssh-add $HOME/deploy_key
   - lein clean
   - lein uberjar
-  - echo $KULU_JAR_PATH
   - scp $HOME/build/nilenso/kulu-backend/target/kulu-backend-0.1.0-SNAPSHOT-standalone.jar $DEPLOY_USER@$DEPLOY_TARGET:~/
 deploy:
   provider: script

@@ -3,7 +3,7 @@
   gather_facts: no
 
   tasks:
-    - name: Create service file
+    - name: Copy service file
       become: true
       copy:
         src: "kulu.service"
@@ -13,3 +13,4 @@
       systemd:
         state: started
         name: kulu
+        enabled: yes
