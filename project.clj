@@ -22,7 +22,7 @@
 
                  [org.clojure/java.jdbc "0.3.4"]
                  [com.jolbox/bonecp "0.8.0.RELEASE"]
-                 [org.postgresql/postgresql "9.3-1100-jdbc4"]
+                 [org.postgresql/postgresql "42.3.1"]
                  [honeysql "0.4.3"]
                  [clj-sql-up "0.3.3"]
                  [stencil "0.3.5"]
